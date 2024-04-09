@@ -18,26 +18,33 @@ struct ContentView: View {
     
     var body: some View {
         ScrollView {
-            TagLayout(hSpacing: 5,vSpacing: 5){
-                
+            Divider()
+            SmartLayout(hSpacing: 5,vSpacing: 5){
+                ForEach(source.indices, id: \.self) { index in
+                    Circle().fill(source[index]).frame(width: 50)
+                        .overlay {
+                            Text("\(index)")
+                        }
+                }
+            }
+            
+            Divider()
+            
+            SmartLayout(hSpacing: 5,vSpacing: 5){
                 ForEach(tags.indices, id: \.self) { index in
                     Circle().fill(tags[index]).frame(width: 50)
-                }.frame(maxWidth: .infinity)
-            }//.padding()
-//                .background {
-//                    RoundedRectangle(cornerRadius: 10).fill(.ultraThinMaterial)
-//                }
+                }
+            }
             
-            
-                        GenericTagView(sourceContent: source,
-                                       returnedTags: $tags) {
-                            RoundedRectangle(cornerRadius: 25.0).fill(.ultraThinMaterial)
-                        } cellView: { col in
-                            Circle().fill(col)
-                                .frame(width: 40,height: 40)
-                        }
-            //            .padding()
-            
+            AnyContentView(sourceContent: source,
+                           selectedContent: $tags) {
+                RoundedRectangle(cornerRadius: 25.0).fill(.ultraThinMaterial)
+            } cellView: { col in
+                Circle().fill(col).overlay(content: {
+                    Text("\(col.description)")
+                })
+                    .frame(width: 70,height: 70)
+            }
         }
     }
 }

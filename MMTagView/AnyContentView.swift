@@ -7,20 +7,20 @@
 
 import SwiftUI
 
-struct GenericTagView<T: View,B:View, SelectableContent: Hashable>: View {
+struct AnyContentView<T: View,B:View, SelectableContent: Hashable>: View {
     
     var sourceContent: [SelectableContent]
     @State var identableContent: [(SelectableContent, Int)] = []
     
-    @Binding var returnedTags: [SelectableContent]
-    @State var tags: [(SelectableContent,Int)] = []
+    @Binding var selectedContent: [SelectableContent]
+    @State var selectedCases: [(SelectableContent,Int)] = []
     @State var allCases: [(SelectableContent,Int)] = []
     
     @State var editMode: Bool = false
     
     @State private var totalHeight = CGFloat.zero
     
-    @ViewBuilder var tagViewBackground: () -> B
+    @ViewBuilder var backgroundView: () -> B
     @ViewBuilder var cellView: (SelectableContent) -> T
     
     var horizontalPadding: Double = 4
@@ -38,7 +38,7 @@ struct GenericTagView<T: View,B:View, SelectableContent: Hashable>: View {
                     var height = Double.zero
                     ZStack(alignment: .topLeading) {
                         Text(promptPlaceholder)
-                            .opacity((tags.isEmpty && !editMode) ? 1 : 0)
+                            .opacity((selectedCases.isEmpty && !editMode) ? 1 : 0)
                         
                         ForEach(allCases.indices, id: \.self) { index in
                             cellView(allCases[index].0)
@@ -66,7 +66,7 @@ struct GenericTagView<T: View,B:View, SelectableContent: Hashable>: View {
                                     }
                                     return result
                                 })
-                                .opacity(isInTag(element: allCases[index]) ? 1 : 0.5)
+                                .opacity(isSelected(element: allCases[index]) ? 1 : 0.5)
                                 .onTapGesture {
                                     withAnimation {
                                         if editMode{
@@ -78,10 +78,10 @@ struct GenericTagView<T: View,B:View, SelectableContent: Hashable>: View {
                     }
                     .background {
                         GeometryReader { geometry in
-                            return Color.clear.preference(key: SizeTagViewPreferenceKey.self, value: geometry.size)
+                            return Color.clear.preference(key: AnyContentViewSizePreferenceKey.self, value: geometry.size)
                         }
                     }
-                    .onPreferenceChange(SizeTagViewPreferenceKey.self, perform: {
+                    .onPreferenceChange(AnyContentViewSizePreferenceKey.self, perform: {
                         self.totalHeight = $0.height
                     })
                 }
@@ -89,14 +89,14 @@ struct GenericTagView<T: View,B:View, SelectableContent: Hashable>: View {
             .frame(height: totalHeight)
             .padding()
             .background {
-                tagViewBackground()
+                backgroundView()
             }
             
             Button(action: {
                 withAnimation(.easeInOut(duration: 0.2)){
                     editMode.toggle()
-                    allCases = editMode ? identableContent : filteredTags()
-                    returnedTags = tags.map { $0.0 }
+                    allCases = editMode ? identableContent : filteredContent()
+                    selectedContent = selectedCases.map { $0.0 }
                 }
             }, label: {
                 Text(editMode ? "Done":"Edit")
@@ -115,19 +115,19 @@ struct GenericTagView<T: View,B:View, SelectableContent: Hashable>: View {
         }
     }
     
-    private func filteredTags() -> [(SelectableContent,Int)]{
+    private func filteredContent() -> [(SelectableContent,Int)]{
         if freezePosition {
             return identableContent.filter { el in
-                tags.contains { $0.1 == el.1
+                selectedCases.contains { $0.1 == el.1
                 }
             }
         } else {
-            return tags
+            return selectedCases
         }
     }
     
-    private func isInTag(element: (SelectableContent, Int)) -> Bool {
-        return tags.contains { el in
+    private func isSelected(element: (SelectableContent, Int)) -> Bool {
+        return selectedCases.contains { el in
             el == element
         }
     }
@@ -135,27 +135,25 @@ struct GenericTagView<T: View,B:View, SelectableContent: Hashable>: View {
     // MARK: - selection handler
     private func tap(element: (SelectableContent,Int)){
         print("tap \(element)")
-        if tags.contains(where: { el in
+        if selectedCases.contains(where: { el in
             el == element
         }) {
-            tags.removeAll { el in
+            selectedCases.removeAll { el in
                 el == element
             }
         } else {
-            self.tags.append(element)
+            self.selectedCases.append(element)
         }
     }
 }
 
 //#Preview {
-//
-//        ContentView()
-//
+//    ContentView()
 //}
 
-// MARK: - Width tagView preference
+// MARK: - size preference key
 
-struct SizeTagViewPreferenceKey: PreferenceKey{
+struct AnyContentViewSizePreferenceKey: PreferenceKey{
     static let defaultValue: CGSize = .zero
     static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
         

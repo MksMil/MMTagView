@@ -10,13 +10,17 @@ import SwiftUI
 struct TagViewLayout: View {
     var body: some View {
         ScrollView{
-            TagLayout(hSpacing: 10,vSpacing: 10){
-                Circle().fill(.red).frame(width: 100, height: 100)
-                Rectangle().fill(.blue).frame(width: 100, height: 100)
-                RoundedRectangle(cornerRadius: 25.0).stroke(Color.orange, lineWidth: 1).frame(width: 100, height: 100)
+            SmartLayout(hSpacing: 10,vSpacing: 10){
+                Circle().fill(.red)
+                    .frame(width: 100, height: 100)
+                Rectangle().fill(.blue)
+                    .frame(width: 100, height: 100)
+                RoundedRectangle(cornerRadius: 25.0).stroke(Color.orange, lineWidth: 1)
+                    .frame(width: 100, height: 100)
             }
             .border(Color.black,width: 3)
             .padding(10)
+            .border(.green, width: 2)
             .frame(width: 340)
             .padding()
             .border(.red, width: 3)
@@ -30,10 +34,9 @@ struct TagViewLayout: View {
     //    ContentView()
 }
 
-// MARK: - Layout
 
 // MARK: - Any View and Size Grid Layout
-struct TagLayout: Layout{
+struct SmartLayout: Layout{
     
     var hSpacing: Double
     var vSpacing: Double
