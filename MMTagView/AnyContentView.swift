@@ -134,7 +134,6 @@ struct AnyContentView<T: View,B:View, SelectableContent: Hashable>: View {
     
     // MARK: - selection handler
     private func tap(element: (SelectableContent,Int)){
-        print("tap \(element)")
         if selectedCases.contains(where: { el in
             el == element
         }) {
