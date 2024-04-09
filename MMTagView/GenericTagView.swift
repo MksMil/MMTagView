@@ -52,7 +52,7 @@ struct GenericTagView<T: View,B:View, SelectableContent: Hashable>: View {
                                         height -= d.height
                                     }
                                     let result = width
-                                    if allCases[index].0 == allCases.last!.0 {
+                                    if allCases[index].1 == allCases.last!.1 {
                                         width = 0 //last item
                                     } else {
                                         width -= d.width
@@ -61,7 +61,7 @@ struct GenericTagView<T: View,B:View, SelectableContent: Hashable>: View {
                                 })
                                 .alignmentGuide(.top, computeValue: {d in
                                     let result = height
-                                    if allCases[index].0 ==  allCases.last!.0 {
+                                    if allCases[index].1 ==  allCases.last!.1 {
                                         height = 0 // last item
                                     }
                                     return result
@@ -115,15 +115,10 @@ struct GenericTagView<T: View,B:View, SelectableContent: Hashable>: View {
         }
     }
     
-    
-    private func makeID(element: SelectableContent) -> String {
-        return String( sourceContent.firstIndex(of: element) ?? 0)
-    }
-    
     private func filteredTags() -> [(SelectableContent,Int)]{
         if freezePosition {
             return identableContent.filter { el in
-                tags.contains { $0 == el
+                tags.contains { $0.1 == el.1
                 }
             }
         } else {

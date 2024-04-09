@@ -23,10 +23,10 @@ struct ContentView: View {
                 ForEach(tags.indices, id: \.self) { index in
                     Circle().fill(tags[index]).frame(width: 50)
                 }.frame(maxWidth: .infinity)
-            }.padding()
-                .background {
-                    RoundedRectangle(cornerRadius: 10).fill(.ultraThinMaterial)
-                }
+            }//.padding()
+//                .background {
+//                    RoundedRectangle(cornerRadius: 10).fill(.ultraThinMaterial)
+//                }
             
             
                         GenericTagView(sourceContent: source,
@@ -34,9 +34,6 @@ struct ContentView: View {
                             RoundedRectangle(cornerRadius: 25.0).fill(.ultraThinMaterial)
                         } cellView: { col in
                             Circle().fill(col)
-            //                Text(col)
-            //                    .fixedSize().padding(.horizontal,4)
-            //                    .background(RoundedRectangle(cornerRadius: 5).fill( Color.blue))
                                 .frame(width: 40,height: 40)
                         }
             //            .padding()
