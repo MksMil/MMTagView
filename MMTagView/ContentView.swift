@@ -19,6 +19,7 @@ struct ContentView: View {
     var body: some View {
         ScrollView {
             Divider()
+            //show all content cases
             SmartLayout(hSpacing: 5,vSpacing: 5){
                 ForEach(source.indices, id: \.self) { index in
                     Circle().fill(source[index]).frame(width: 50)
@@ -30,12 +31,14 @@ struct ContentView: View {
             
             Divider()
             
+            //selected cases show
             SmartLayout(hSpacing: 5,vSpacing: 5){
                 ForEach(tags.indices, id: \.self) { index in
                     Circle().fill(tags[index]).frame(width: 50)
                 }
             }
             
+            //selection manager :)
             AnyContentView(sourceContent: source,
                            selectedContent: $tags) {
                 RoundedRectangle(cornerRadius: 25.0).fill(.ultraThinMaterial)
